@@ -17,5 +17,6 @@ test {
     _ = @import("http.zig");
     _ = @import("matrix.zig");
     _ = @import("Bot/CommandInput.zig");
-    _ = @import("Bot/handlers.zig");
+    _ = @import("Bot/commands/Help.zig");
+    _ = @import("Bot/commands/TypingTest.zig");
 }

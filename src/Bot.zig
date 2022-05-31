@@ -4,7 +4,7 @@ const json = std.json;
 const mem = std.mem;
 
 const matrix = @import("matrix.zig");
-usingnamespace @import("Bot/handlers.zig");
+const Message = @import("Bot/Message.zig");
 const Bot = @This();
 
 next_batch: ?matrix.api.String = null,
@@ -139,12 +139,12 @@ pub fn run(self: *Bot, allocator: mem.Allocator) !void {
                             if (event.content.get("body")) |body| {
                                 if (body != .String)
                                     return error.InvalidValue;
-                                const message = Bot.Message{
+                                const message = Message{
                                     .room_id = room_id,
                                     .body = body.String,
                                     .sender = .{ .value = event.sender orelse return error.NoMessageSender },
                                 };
-                                try message.handle(allocator, self);
+                                try message.handle(allocator, &self.client);
                             }
                         }
                     }
