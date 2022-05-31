@@ -175,7 +175,7 @@ pub const Client = struct {
             return error.NoResponseCode;
 
         log.debug("response status: {}", .{status});
-        log.debug("response body: {s}\n", .{self.body.items});
+        log.debug("response body: {s}", .{self.body.items});
         return Response{ .status = status, .body = self.body.items };
     }
 };

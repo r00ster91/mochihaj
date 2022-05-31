@@ -1,4 +1,5 @@
 const std = @import("std");
+const debug = std.debug;
 
 const Bot = @import("Bot.zig");
 
@@ -11,6 +12,34 @@ pub fn main() !void {
     defer bot.deinit(allocator);
 
     try bot.run(allocator);
+}
+
+pub fn log(
+    comptime level: std.log.Level,
+    comptime scope: @TypeOf(.EnumLiteral),
+    comptime format: []const u8,
+    args: anytype,
+) void {
+    debug.assert(scope == .default);
+
+    debug.getStderrMutex().lock();
+    defer debug.getStderrMutex().unlock();
+    const stderr = std.io.getStdErr().writer();
+
+    // The timestamp is UTC and is useful as a reference
+    const epoch_seconds = std.time.epoch.EpochSeconds{
+        .secs = @intCast(u64, std.time.timestamp()),
+    };
+    const day_seconds = epoch_seconds.getDaySeconds();
+    nosuspend stderr.print("[{d}:{d}] ", .{
+        day_seconds.getHoursIntoDay(),
+        day_seconds.getMinutesIntoHour(),
+    }) catch return;
+
+    nosuspend stderr.print(
+        @tagName(level) ++ ": " ++ format ++ "\n",
+        args,
+    ) catch return;
 }
 
 test {
