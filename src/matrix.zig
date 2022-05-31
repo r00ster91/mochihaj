@@ -13,7 +13,7 @@ pub const api = @import("matrix/api.zig");
 pub const ID = struct {
     value: []const u8,
 
-    const max_len = 255;
+    const maximum_length = 255;
 
     /// Returns the username.
     pub fn getLocalpart(self: ID) []const u8 {
@@ -35,7 +35,7 @@ pub const ID = struct {
 
     /// Minimizes the ID while keeping it unique.
     /// Use this for efficient storage.
-    fn getMinimized(self: ID, id: *[max_len]u8) []const u8 {
+    fn getMinimized(self: ID, id: *[maximum_length]u8) []const u8 {
         const localpart = self.getLocalpart();
         mem.copy(u8, id, localpart);
 
@@ -94,6 +94,6 @@ test "splitting IDs" {
 }
 
 test "minimizing IDs" {
-    var minimized_id: [ID.max_len]u8 = undefined;
+    var minimized_id: [ID.maximum_length]u8 = undefined;
     try testing.expectEqualStrings("localpartsubdomaindomaincom", test_id.getMinimized(&minimized_id));
 }
