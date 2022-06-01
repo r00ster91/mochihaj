@@ -21,7 +21,7 @@ pub fn init(allocator: mem.Allocator) !Bot {
         allocator,
         .{
             .identifier = .{ .user = matrix_id.value },
-            .password = "dethärärmochihajslösenord",
+            .password = @embedFile("../password"),
             .type = .@"m.login.password",
         },
     );
