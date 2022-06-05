@@ -16,6 +16,7 @@ pub const username = matrix_id.getLocalpart();
 
 pub fn init(allocator: mem.Allocator) !Bot {
     var matrix_client = try matrix.Client.init(allocator, matrix_id);
+    errdefer matrix_client.deinit(allocator);
 
     const access_token = try matrix_client.login(
         allocator,

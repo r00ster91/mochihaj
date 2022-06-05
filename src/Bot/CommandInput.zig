@@ -27,6 +27,7 @@ pub fn parse(allocator: mem.Allocator, body: []const u8, mention: []const u8) (e
             try ascii.allocLowerString(allocator, name)
         else
             return error.OnlyMention;
+        errdefer allocator.free(command_name);
 
         var arguments = std.ArrayList([]const u8).init(allocator);
         while (tokens.next()) |argument|

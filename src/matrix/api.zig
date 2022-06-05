@@ -331,6 +331,7 @@ pub fn sendMessage(
         "/_matrix/client/v3/rooms/{s}/send/m.room.message/{d}",
         .{ room_id, transaction_id },
     );
+    defer allocator.free(path);
     const endpoint = Endpoint(
         .PUT,
         struct {
