@@ -159,7 +159,7 @@ pub const Client = struct {
             unreachable;
 
         log.info("sending {s} request to {s}", .{ @tagName(method), url });
-        log.debug("request body: {s}", .{ body });
+        log.debug("request body: {s}", .{body});
 
         // Here `write_callback` will be invoked
         const result = curl.curl_easy_perform(self.curl_handle);

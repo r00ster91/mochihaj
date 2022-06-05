@@ -16,6 +16,7 @@ body: []const u8,
 sender: matrix.ID,
 
 pub fn handle(self: Message, allocator: mem.Allocator, client: *matrix.Client) !void {
+    // Some commands need the raw message as-is
     inline for (commands) |command| {
         if (@hasDecl(command.implementation, "handleMessage")) {
             const handled = command.handleMessage(allocator, client, self);

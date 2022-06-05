@@ -72,17 +72,13 @@ pub fn deinit(self: Bot, allocator: mem.Allocator) void {
 pub fn run(self: *Bot, allocator: mem.Allocator) !void {
     var first_synchronization = true;
     while (true) {
-        var arena = std.heap.ArenaAllocator.init(allocator);
         const state = try self.client.synchronize(
             allocator,
             self.filter_id,
             self.next_batch,
             5 * std.time.ms_per_min,
         );
-        defer {
-            arena.deinit();
-            first_synchronization = false;
-        }
+
         self.next_batch = try allocator.dupe(u8, state.next_batch);
 
         if (state.rooms) |rooms| {
@@ -94,7 +90,10 @@ pub fn run(self: *Bot, allocator: mem.Allocator) !void {
 
                     self.client.joinRoom(allocator, room_id) catch |@"error"| {
                         switch (@"error") {
-                            error.NoPermission => log.err("no permission to join room {s}", .{room_id}),
+                            error.NoPermission => {
+                                log.err("no permission to join room {s}", .{room_id});
+                                break;
+                            },
                             else => return @"error",
                         }
                     };

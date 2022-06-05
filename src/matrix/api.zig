@@ -19,7 +19,6 @@ const fmt = std.fmt;
 const mem = std.mem;
 const json = std.json;
 
-const http = @import("../http.zig");
 const matrix = @import("../matrix.zig");
 const Client = matrix.Client;
 const Endpoint = @import("api/endpoint.zig").Endpoint;
