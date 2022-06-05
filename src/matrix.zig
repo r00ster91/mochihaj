@@ -59,11 +59,14 @@ pub const Client = struct {
             break :hostname server_name_splitter.next().?;
         };
 
-        var matrix_client = Client{ .http_client = try http.Client.init(
-            allocator,
-            hostname,
-            .encrypted,
-        ), .homeserver_url = undefined };
+        var matrix_client = Client{
+            .http_client = try http.Client.init(
+                allocator,
+                hostname,
+                .encrypted,
+            ),
+            .homeserver_url = undefined,
+        };
 
         try matrix_client.http_client.setHeader(allocator, "Content-Type", "application/json");
 
