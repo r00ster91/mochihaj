@@ -4,7 +4,7 @@ const json = std.json;
 const mem = std.mem;
 
 const api = @import("../api.zig");
-const http = @import("../../http.zig");
+const http = @import("../../http2.zig");
 const Client = @import("../../matrix.zig").Client;
 
 pub fn Endpoint(method: std.http.Method, comptime OptionalRequestValue: ?type, comptime Responses: type) type {

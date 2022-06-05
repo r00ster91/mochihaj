@@ -17,7 +17,7 @@ pub const username = matrix_id.getLocalpart();
 pub fn init(allocator: mem.Allocator) !Bot {
     var matrix_client = try matrix.Client.init(allocator, matrix_id);
 
-    const access_token = try matrix_client.login(
+    var access_token_request = async matrix_client.login(
         allocator,
         .{
             .identifier = .{ .user = matrix_id.value },
@@ -25,6 +25,8 @@ pub fn init(allocator: mem.Allocator) !Bot {
             .type = .@"m.login.password",
         },
     );
+    resume matrix_client.http_client.request_frame;
+    const access_token = try nosuspend await access_token_request;
     defer allocator.free(access_token);
 
     const header_value = try std.fmt.allocPrint(allocator, "Bearer {s}", .{access_token});
@@ -38,7 +40,7 @@ pub fn init(allocator: mem.Allocator) !Bot {
 
     // There are some bugs currently where using `0` for `limit` does not actually work.
     // To workaround this bug, we use `["none"]` for `types`.
-    const filter_id = try matrix_client.uploadFilter(
+    var upload_filter_request = async matrix_client.uploadFilter(
         allocator,
         matrix_id,
         .{
@@ -54,6 +56,8 @@ pub fn init(allocator: mem.Allocator) !Bot {
             },
         },
     );
+    resume matrix_client.http_client.request_frame;
+    const filter_id = try nosuspend await upload_filter_request;
 
     return Bot{
         .client = matrix_client,

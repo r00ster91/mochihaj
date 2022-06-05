@@ -11,7 +11,7 @@ pub fn main() !void {
     var bot = try Bot.init(allocator);
     defer bot.deinit(allocator);
 
-    try bot.run(allocator);
+    // try bot.run(allocator);
 }
 
 pub fn log(
@@ -47,5 +47,5 @@ test {
     _ = @import("matrix.zig");
     _ = @import("Bot/CommandInput.zig");
     _ = @import("Bot/commands/Help.zig");
-    _ = @import("Bot/commands/TypingTest.zig");
+    // _ = @import("Bot/commands/TypingTest.zig");
 }

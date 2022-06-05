@@ -4,7 +4,7 @@ const log = std.log;
 const json = std.json;
 const testing = std.testing;
 
-const http = @import("http.zig");
+const http = @import("http2.zig");
 pub const api = @import("matrix/api.zig");
 
 /// A Matrix ID.
@@ -59,15 +59,20 @@ pub const Client = struct {
             break :hostname server_name_splitter.next().?;
         };
 
-        var matrix_client = Client{ .http_client = try http.Client.init(
-            allocator,
-            hostname,
-            .encrypted,
-        ), .homeserver_url = undefined };
+        var matrix_client = Client{
+            .http_client = try http.Client.init(
+                allocator,
+                hostname,
+                .encrypted,
+            ),
+            .homeserver_url = undefined,
+        };
 
         try matrix_client.http_client.setHeader(allocator, "Content-Type", "application/json");
 
-        matrix_client.homeserver_url = try matrix_client.discoverServer(allocator);
+        var discover_server_request = async matrix_client.discoverServer(allocator);
+        resume matrix_client.http_client.request_frame;
+        matrix_client.homeserver_url = try nosuspend await discover_server_request;
 
         var homeserver_url_splitter = mem.split(u8, matrix_client.homeserver_url, "//");
         _ = homeserver_url_splitter.next().?;
